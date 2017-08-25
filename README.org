@@ -50,32 +50,35 @@
 * Configuration
 
   #+BEGIN_SRC lisp
-(require 'e2wm-perspb)
+    (require 'e2wm-perspb)
 
-(setq e2wm:c-code-recipe
-      '(| (:left-max-size 40)
-          (- (:upper-size-ratio 0.6)
-             files history)
-          (- (:lower-max-size 150)
-             (| (:right-max-size 40)
-                main imenu)
-             sub)))
+    ;; font-lock in rails project
+    (require 'e2wm-perspb-rails)
 
-(setq e2wm:c-code-winfo
-      '((:name main)
-        (:name files   :plugin files)
-        (:name history :plugin perspb)
-        (:name imenu   :plugin imenu :default-hide nil)
-        (:name sub     :buffer "*info*" :default-hide t)))
+    (setq e2wm:c-code-recipe
+          '(| (:left-max-size 40)
+              (- (:upper-size-ratio 0.6)
+                 files history)
+              (- (:lower-max-size 150)
+                 (| (:right-max-size 40)
+                    main imenu)
+                 sub)))
 
-(e2wm:add-keymap
- e2wm:dp-two-minor-mode-map
- '(("C-." . e2wm-perspb:switch-to-down-entry-command)
-   ("C-," . e2wm-perspb:switch-to-up-entry-command)
-   ) e2wm:prefix-key)
+    (setq e2wm:c-code-winfo
+          '((:name main)
+            (:name files   :plugin files)
+            (:name history :plugin perspb)
+            (:name imenu   :plugin imenu :default-hide nil)
+            (:name sub     :buffer "*info*" :default-hide t)))
+
+    (e2wm:add-keymap
+     e2wm:dp-two-minor-mode-map
+     '(("C-." . e2wm-perspb:switch-to-down-entry-command)
+       ("C-," . e2wm-perspb:switch-to-up-entry-command)
+       ) e2wm:prefix-key)
   #+END_SRC
 
-  
+
 * Tested On
   
   - Emacs ... GNU Emacs 24.5.1 (x86_64-apple-darwin14.5.0, NS apple-appkit-1348.17) of 2016-06-16 on 192.168.102.190

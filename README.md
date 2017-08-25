@@ -57,6 +57,9 @@ Download e2wm-perspb.el and put it on your load-path.
 ```lisp
   (require 'e2wm-perspb)
 
+  ;; font-lock in rails project
+  (require 'e2wm-perspb-rails)
+
   (setq e2wm:c-code-recipe
         '(| (:left-max-size 40)
             (- (:upper-size-ratio 0.6)
