@@ -1,0 +1,90 @@
+#+OPTIONS: toc:nil
+
+* What's this?
+  
+  This is a extension of Emacs that is a plugin of [[https://github.com/kiwanami/emacs-window-manager][e2wm.el]].  
+  List of buffer managed by [[https://github.com/Bad-ptr/persp-mode.el][persp-mode.el]].  
+
+  [[file:image/demo.png][demo]]
+
+  
+* Install
+  
+*** package.el
+
+    2017/08/25 Unavailable
+    
+*** el-get.el
+
+    2017/08/25 Unavailable
+
+    If you use [[https://github.com/tarao/el-get-lock][el-get-lock.el]], you are able to install this plugin by the following code.  
+
+    #+BEGIN_SRC lisp
+(bundle aki2o/e2wm-perspb)
+    #+END_SRC
+    
+*** auto-install.el
+    
+    #+BEGIN_SRC lisp
+(auto-install-from-url "https://raw.github.com/aki2o/e2wm-perspb/master/e2wm-perspb.el")
+    #+END_SRC
+    
+    - In this case, you need to install each of the following dependency.
+      
+*** Manually
+    
+    Download e2wm-perspb.el and put it on your load-path.  
+    
+    - In this case, you need to install each of the following dependency.
+      
+*** Dependency
+    
+    - [[https://github.com/kiwanami/emacs-window-manager][e2wm.el]]
+    - [[https://github.com/Bad-ptr/persp-mode.el][persp-mode.el]]
+    - [[https://github.com/magnars/dash.el][dash.el]]
+    - [[https://github.com/kiwanami/emacs-deferred][concurrent.el]]
+    - [[https://github.com/aki2o/yaxception][yaxception.el]]
+      
+      
+* Configuration
+
+  #+BEGIN_SRC lisp
+(require 'e2wm-perspb)
+
+(setq e2wm:c-code-recipe
+      '(| (:left-max-size 40)
+          (- (:upper-size-ratio 0.6)
+             files history)
+          (- (:lower-max-size 150)
+             (| (:right-max-size 40)
+                main imenu)
+             sub)))
+
+(setq e2wm:c-code-winfo
+      '((:name main)
+        (:name files   :plugin files)
+        (:name history :plugin perspb)
+        (:name imenu   :plugin imenu :default-hide nil)
+        (:name sub     :buffer "*info*" :default-hide t)))
+
+(e2wm:add-keymap
+ e2wm:dp-two-minor-mode-map
+ '(("C-." . e2wm-perspb:switch-to-down-entry-command)
+   ("C-," . e2wm-perspb:switch-to-up-entry-command)
+   ) e2wm:prefix-key)
+  #+END_SRC
+
+  
+* Tested On
+  
+  - Emacs ... GNU Emacs 24.5.1 (x86_64-apple-darwin14.5.0, NS apple-appkit-1348.17) of 2016-06-16 on 192.168.102.190
+  - e2wm.el ... 1.2
+  - persp-mode.el ... 2.9.4
+  - dash.el ... 2.12.0
+  - concurrent.el ... 0.3.1
+  - yaxception.el ... 0.3.2
+    
+    
+  *Enjoy!!!*
+  

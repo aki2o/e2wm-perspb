@@ -57,6 +57,12 @@
 ;;         (:name history :plugin perspb)
 ;;         (:name imenu   :plugin imenu :default-hide nil)
 ;;         (:name sub     :buffer "*info*" :default-hide t)))
+;; 
+;; (e2wm:add-keymap
+;;  e2wm:dp-two-minor-mode-map
+;;  '(("C-." . e2wm-perspb:switch-to-down-entry-command)
+;;    ("C-," . e2wm-perspb:switch-to-up-entry-command)
+;;    ) e2wm:prefix-key)
 
 ;;; Customization:
 ;; 
