@@ -257,6 +257,8 @@
           (e2wm-perspb:select-command))))))
 
 
+;; Auto refresh
+
 (defvar e2wm-perspb::refresh-semaphore (cc:semaphore-create 1))
 
 (defun e2wm-perspb:set-refresh-timer (frame-or-window)
@@ -274,6 +276,14 @@
           (yaxception:finally
             (cc:semaphore-release e2wm-perspb::refresh-semaphore)))))))
 
+(defadvice persp-add-buffer (after e2wm-perspb:refresh activate)
+  (e2wm-perspb:set-refresh-timer 'frame))
+
+(add-to-list 'persp-activated-functions 'e2wm-perspb:set-refresh-timer t)
+
+
+;; Auto add buffer
+
 (defvar e2wm-perspb::add-buffer-enabled t)
 
 (defun e2wm-perspb:add-buffer (buf)
@@ -286,23 +296,18 @@
     (let ((persp-switch-to-added-buffer nil))
       (persp-add-buffer buf))))
 
+(defadvice persp-activate (around e2wm-perspb:disable-add-buffer activate)
+  (let ((e2wm-perspb::add-buffer-enabled nil))
+    ad-do-it))
+
 (defadvice display-buffer (after e2wm-perspb:add-buffer activate)
   (e2wm-perspb:add-buffer (ad-get-arg 0)))
 
 (defadvice set-window-buffer (after e2wm-perspb:add-buffer activate)
   (e2wm-perspb:add-buffer (ad-get-arg 0)))
 
-
-;; For perspective.el
-
-(defadvice persp-activate (around e2wm-perspb:disable-add-buffer activate)
-  (let ((e2wm-perspb::add-buffer-enabled nil))
-    ad-do-it))
-
-(defadvice persp-add-buffer (after e2wm-perspb:refresh activate)
-  (e2wm-perspb:set-refresh-timer 'frame))
-
-(add-to-list 'persp-activated-functions 'e2wm-perspb:set-refresh-timer t)
+(defadvice wlf:set-buffer (after e2wm-perspb:add-buffer activate)
+  (e2wm-perspb:add-buffer (ad-get-arg 2)))
 
 
 (provide 'e2wm-perspb)
