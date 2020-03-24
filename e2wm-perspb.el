@@ -5,8 +5,8 @@
 ;; Author: Hiroaki Otsu <ootsuhiroaki@gmail.com>
 ;; Keywords: tools, window manager
 ;; URL: https://github.com/aki2o/e2wm-perspb
-;; Version: 0.0.2
-;; Package-Requires: ((e2wm "1.2") (persp-mode "2.9.4") (dash "2.12.0") (deferred "0.3.1") (yaxception "0.3.2"))
+;; Version: 0.0.3
+;; Package-Requires: ((e2wm "1.2") (persp-mode "2.9.4") (dash "2.12.0") (deferred "0.3.1") (yaxception "0.3.2") (all-the-icons "3.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -32,6 +32,7 @@
 ;; - dash.el ( see <https://github.com/magnars/dash.el> )
 ;; - concurrent.el ( see <https://github.com/kiwanami/emacs-deferred> )
 ;; - yaxception.el ( see <https://github.com/aki2o/yaxception> )
+;; - all-the-icons.el ( see <https://github.com/domtronn/all-the-icons.el> )
 
 ;;; Installation:
 ;;
@@ -79,12 +80,13 @@
 
 ;;; Tested On:
 ;; 
-;; - Emacs ... GNU Emacs 24.5.1 (x86_64-apple-darwin14.5.0, NS apple-appkit-1348.17) of 2016-06-16 on 192.168.102.190
+;; - Emacs ... GNU Emacs 26.1 (build 1, x86_64-apple-darwin14.5.0, NS appkit-1348.17 Version 10.10.5 (Build 14F2511)) of 2018-05-31
 ;; - e2wm.el ... Version 1.2
 ;; - persp-mode.el ... Version 2.9.4
 ;; - dash.el ... Version 2.12.0
 ;; - concurrent.el ... Version 0.3.1
 ;; - yaxception.el ... Version 0.3.2
+;; - all-the-icons.el ... Version 3.2.0
 
 
 ;; Enjoy!!!
@@ -97,6 +99,7 @@
 (require 'dash)
 (require 'concurrent)
 (require 'yaxception)
+(require 'all-the-icons)
 
 
 (defgroup e2wm-perspb nil
@@ -132,7 +135,7 @@
 
 (defun e2wm-perspb:make-normal-entry (buf)
   `(:name ,(buffer-name buf)
-          :mark " "
+          :mark nil
           :name-face ,(if (buffer-file-name buf)
                           'e2wm-perspb:file-buffer-face
                         'e2wm-perspb:non-file-buffer-face)
@@ -162,16 +165,22 @@
             (erase-buffer)
             (loop initially (goto-char (point-min))
                   with nextpt = nil
+                  with all-the-icons-scale-factor = 1.0
+                  with all-the-icons-default-adjust = 0
                   for b in buf-list
                   for pt = (point)
                   for entry = (loop for f in e2wm-perspb:entry-makers
                                     for entry = (funcall f b)
                                     if entry return entry
                                     finally return (e2wm-perspb:make-normal-entry b))
-                  for line = (format "%s%s%s"
-                                     (e2wm:rt (plist-get entry :mark) (plist-get entry :mark-face))
-                                     (if (buffer-modified-p b) "*" " ")
-                                     (e2wm:rt (plist-get entry :name) (plist-get entry :name-face)))
+                  for line = (let ((mark (or (plist-get entry :mark)
+                                             (e2wm:aif (buffer-file-name b) (all-the-icons-icon-for-file it))
+                                             (all-the-icons-icon-for-mode (buffer-local-value 'major-mode b))))
+                                   (mark-face (if (buffer-modified-p b) 'font-lock-warning-face (plist-get entry :mark-face)))
+                                   (name-face (if (buffer-modified-p b) 'font-lock-warning-face (plist-get entry :name-face))))
+                               (format "%s %s"
+                                       (e2wm:rt mark mark-face)
+                                       (e2wm:rt (plist-get entry :name) name-face)))
                   do (insert
                       (if (> pt (point-min)) "\n" "")
                       (e2wm:tp line 'e2wm:buffer b))

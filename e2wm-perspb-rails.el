@@ -97,36 +97,35 @@
       (cond
        ((string-match "app/controllers/.+_controller\\.rb\\'" filepath)
         `(:name ,bufname
-                :mark "C"
+                :mark nil
                 :name-face e2wm-perspb-rails:controller-name-face
                 :mark-face e2wm-perspb-rails:controller-mark-face))
        ((string-match "app/models/[^/]+\\.rb\\'" filepath)
         `(:name ,bufname
-                :mark "M"
+                :mark nil
                 :name-face e2wm-perspb-rails:model-name-face
                 :mark-face e2wm-perspb-rails:model-mark-face))
        ((string-match "app/views/.+\\.html\\." filepath)
         `(:name ,bufname
-                :mark "V"
+                :mark nil
                 :name-face e2wm-perspb-rails:view-name-face
                 :mark-face e2wm-perspb-rails:view-mark-face))
        ((string-match "app/.+\\.rb\\'" filepath)
         `(:name ,bufname
-                :mark "A"
+                :mark nil
                 :name-face e2wm-perspb-rails:other-app-name-face
                 :mark-face e2wm-perspb-rails:other-app-mark-face))
        ((string-match "factories/.+\\.rb\\'" filepath)
         `(:name ,bufname
-                :mark "F"
+                :mark nil
                 :name-face e2wm-perspb-rails:factory-name-face
                 :mark-face e2wm-perspb-rails:factory-mark-face))
        ((or (string-match "spec/.+_spec\\.rb\\'" filepath)
             (string-match "test/.+_test\\.rb\\'" filepath))
         `(:name ,bufname
-                :mark "T"
+                :mark nil
                 :name-face e2wm-perspb-rails:test-name-face
                 :mark-face e2wm-perspb-rails:test-mark-face))))))
-
 
 (add-to-list 'e2wm-perspb:entry-makers 'e2wm-perspb-rails:make-entry)
 
