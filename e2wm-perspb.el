@@ -117,6 +117,11 @@
   :type (list 'command)
   :group 'e2wm-perspb)
 
+(defcustom e2wm-perspb:sort-function 'e2wm-perspb:sort-entries
+  "Function to sort entries in e2wm-perspb:mode buffer."
+  :type 'function
+  :group 'e2wm-perspb)
+
 (defface e2wm-perspb:file-buffer-face
   '((t (:foreground "ivory")))
   "Face for file buffer."
@@ -141,6 +146,21 @@
                         'e2wm-perspb:non-file-buffer-face)
           :mark-face nil))
 
+(defun e2wm-perspb:sort-entries (entries)
+  (let ((marks '()))
+    (cl-loop for e in entries
+             for key = (plist-get e :mark)
+             for alist = (assoc key marks)
+             do (if alist
+                    (setf (cdr alist) (append (cdr alist) (list e)))
+                  (push (cons key (list e)) marks)))
+    (cl-loop for alist in (sort marks (lambda (a b)
+                                        (or (and (buffer-file-name (plist-get (cadr a) :buffer))
+                                                 (not (buffer-file-name (plist-get (cadr b) :buffer)))
+                                                 t)
+                                            (string< (car a) (car b)))))
+             append (sort (cdr alist) (lambda (a b)
+                                        (string< (plist-get a :name) (plist-get b :name)))))))
 
 (defvar e2wm-perspb::buffer-name " *WM:Perspb*")
 
@@ -149,11 +169,15 @@
 (defun e2wm-perspb:def-plugin (frame wm winfo)
   (let* ((wname (wlf:window-name winfo))
          (buf (e2wm-perspb::ensure-buffer))
-         (buf-list (-filter
-                    'e2wm:history-recordable-p
-                    (cl-delete-if
-                     'persp-buffer-filtered-out-p
-                     (persp-buffer-list-restricted))))
+         (buf-list (-filter 'e2wm:history-recordable-p (cl-delete-if
+                                                        'persp-buffer-filtered-out-p
+                                                        (persp-buffer-list-restricted))))
+         (entries (cl-loop for b in buf-list
+                           for entry = (cl-loop for f in e2wm-perspb:entry-makers
+                                                for entry = (funcall f b)
+                                                if entry return entry
+                                                finally return (e2wm-perspb:make-normal-entry b))
+                           collect (e2wm-perspb::setup-entry entry b)))
          focused-buf)
     (with-current-buffer buf
       (yaxception:$~
@@ -161,30 +185,21 @@
           (setq focused-buf (get-text-property (point-at-bol) 'e2wm:buffer))
           (setq buffer-read-only nil)
           (erase-buffer)
-          (loop initially (goto-char (point-min))
-                with nextpt = nil
-                with all-the-icons-scale-factor = 1.0
-                with all-the-icons-default-adjust = 0
-                for b in buf-list
-                for pt = (point)
-                for entry = (loop for f in e2wm-perspb:entry-makers
-                                  for entry = (funcall f b)
-                                  if entry return entry
-                                  finally return (e2wm-perspb:make-normal-entry b))
-                for line = (let ((mark (or (plist-get entry :mark)
-                                           (e2wm:aif (buffer-file-name b) (all-the-icons-icon-for-file it))
-                                           (all-the-icons-icon-for-mode (buffer-local-value 'major-mode b))))
-                                 (mark-face (if (buffer-modified-p b) 'font-lock-warning-face (plist-get entry :mark-face)))
-                                 (name-face (if (buffer-modified-p b) 'font-lock-warning-face (plist-get entry :name-face))))
-                             (format "%s %s"
-                                     (e2wm:rt mark mark-face)
-                                     (e2wm:rt (plist-get entry :name) name-face)))
-                do (insert
-                    (if (> pt (point-min)) "\n" "")
-                    (e2wm:tp line 'e2wm:buffer b))
-                if (eql focused-buf b)
-                do (setq nextpt (point-at-bol))
-                finally do (set-window-point (get-buffer-window) (goto-char (or nextpt (point-min)))))
+          (cl-loop initially (goto-char (point-min))
+                   with nextpt = nil
+                   for entry in (if e2wm-perspb:sort-function
+                                    (funcall e2wm-perspb:sort-function entries)
+                                  entries)
+                   for pt = (point)
+                   for line = (format "%s %s"
+                                      (e2wm:rt (plist-get entry :mark) (plist-get entry :mark-face))
+                                      (e2wm:rt (plist-get entry :name) (plist-get entry :name-face)))
+                   do (insert
+                       (if (> pt (point-min)) "\n" "")
+                       (e2wm:tp line 'e2wm:buffer (plist-get entry :buffer)))
+                   if (eql focused-buf (plist-get entry :buffer))
+                   do (setq nextpt (point-at-bol))
+                   finally do (set-window-point (get-buffer-window) (goto-char (or nextpt (point-min)))))
           (e2wm-perspb::update-current-highlight)
           (setq mode-line-format
                 '("-" mode-line-mule-info " " mode-line-position "-%-"))
@@ -193,7 +208,7 @@
                         (or (e2wm:aif (get-current-persp)
                                 (persp-name it))
                             "none")
-                        (length buf-list))))
+                        (length entries))))
         (yaxception:finally
           (setq buffer-read-only t))))
     (wlf:set-buffer wm wname buf)))
@@ -208,6 +223,17 @@
         (setq truncate-lines t)
         (buffer-disable-undo buf)
         (current-buffer)))))
+
+(defun e2wm-perspb::setup-entry (entry buf)
+  (let ((all-the-icons-scale-factor 1.0)
+        (all-the-icons-default-adjust 0))
+    `(:buffer ,buf
+              :name ,(plist-get entry :name)
+              :mark ,(or (plist-get entry :mark)
+                         (e2wm:aif (buffer-file-name b) (all-the-icons-icon-for-file it))
+                         (all-the-icons-icon-for-mode (buffer-local-value 'major-mode buf)))
+              :name-face ,(if (buffer-modified-p buf) 'font-lock-warning-face (plist-get entry :name-face))
+              :mark-face ,(if (buffer-modified-p buf) 'font-lock-warning-face (plist-get entry :mark-face)))))
 
 (defvar e2wm-perspb::current-highlight nil)
 
