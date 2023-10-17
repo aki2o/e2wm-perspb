@@ -184,7 +184,7 @@
                     (e2wm:tp line 'e2wm:buffer b))
                 if (eql focused-buf b)
                 do (setq nextpt (point-at-bol))
-                finally do (goto-char (or nextpt (point-min))))
+                finally do (set-window-point (get-buffer-window) (goto-char (or nextpt (point-min)))))
           (e2wm-perspb::update-current-highlight)
           (setq mode-line-format
                 '("-" mode-line-mule-info " " mode-line-position "-%-"))
