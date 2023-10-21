@@ -231,7 +231,11 @@
               :name ,(plist-get entry :name)
               :mark ,(or (plist-get entry :mark)
                          (e2wm:aif (buffer-file-name b) (all-the-icons-icon-for-file it))
-                         (all-the-icons-icon-for-mode (buffer-local-value 'major-mode buf)))
+                         (let* ((mode (buffer-local-value 'major-mode buf))
+                                (icon (all-the-icons-icon-for-mode mode)))
+                           (if (eq icon mode)
+                               (all-the-icons-icon-for-mode 'help-mode)
+                             icon)))
               :name-face ,(if (buffer-modified-p buf) 'font-lock-warning-face (plist-get entry :name-face))
               :mark-face ,(if (buffer-modified-p buf) 'font-lock-warning-face (plist-get entry :mark-face)))))
 
