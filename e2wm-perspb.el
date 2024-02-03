@@ -5,7 +5,7 @@
 ;; Author: Hiroaki Otsu <ootsuhiroaki@gmail.com>
 ;; Keywords: tools, window manager
 ;; URL: https://github.com/aki2o/e2wm-perspb
-;; Version: 0.0.6
+;; Version: 0.0.7
 ;; Package-Requires: ((e2wm "1.2") (persp-mode "2.9.4") (dash "2.12.0") (deferred "0.3.1") (yaxception "1.0.0") (all-the-icons "3.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -22,27 +22,7 @@
 ;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 ;;; Commentary:
-;;
-;; see <https://github.com/aki2o/e2wm-perspb/blob/master/README.md>
 
-;;; Dependency:
-;; 
-;; - e2wm.el ( see <https://github.com/kiwanami/emacs-window-manager> )
-;; - persp-mode.el ( see <https://github.com/Bad-ptr/persp-mode.el> )
-;; - dash.el ( see <https://github.com/magnars/dash.el> )
-;; - concurrent.el ( see <https://github.com/kiwanami/emacs-deferred> )
-;; - yaxception.el ( see <https://github.com/aki2o/yaxception> )
-;; - all-the-icons.el ( see <https://github.com/domtronn/all-the-icons.el> )
-
-;;; Installation:
-;;
-;; Put this to your load-path.
-;; And put the following lines in your .emacs or site-start.el file.
-;; 
-;; (require 'e2wm-perspb)
-
-;;; Configuration:
-;; 
 ;; (setq e2wm:c-code-recipe
 ;;       '(| (:left-max-size 40)
 ;;           (- (:upper-size-ratio 0.6)
@@ -51,48 +31,26 @@
 ;;              (| (:right-max-size 40)
 ;;                 main imenu)
 ;;              sub)))
-;; 
+;;
 ;; (setq e2wm:c-code-winfo
 ;;       '((:name main)
 ;;         (:name files   :plugin files)
 ;;         (:name history :plugin perspb)
 ;;         (:name imenu   :plugin imenu :default-hide nil)
 ;;         (:name sub     :buffer "*info*" :default-hide t)))
-;; 
+;;
 ;; (e2wm:add-keymap
 ;;  e2wm:dp-two-minor-mode-map
 ;;  '(("C-." . e2wm-perspb:switch-to-down-entry-command)
 ;;    ("C-," . e2wm-perspb:switch-to-up-entry-command)
 ;;    ) e2wm:prefix-key)
-
-;;; Customization:
-;; 
-;; [EVAL] (autodoc-document-lisp-buffer :type 'user-variable :prefix "e2wm-perspb:[^:]" :docstring t)
-;;  *** END auto-documentation
-
-;;; API:
-;; 
-;; [EVAL] (autodoc-document-lisp-buffer :type 'function :prefix "e2wm-perspb:[^:]" :docstring t)
-;;  *** END auto-documentation
-;; [EVAL] (autodoc-document-lisp-buffer :type 'command :prefix "e2wm-perspb:[^:]" :docstring t)
-;;  *** END auto-documentation
-;; [Note] Functions and variables other than listed above, Those specifications may be changed without notice.
-
-;;; Tested On:
-;; 
-;; - Emacs ... GNU Emacs 26.1 (build 1, x86_64-apple-darwin14.5.0, NS appkit-1348.17 Version 10.10.5 (Build 14F2511)) of 2018-05-31
-;; - e2wm.el ... Version 1.2
-;; - persp-mode.el ... Version 2.9.4
-;; - dash.el ... Version 2.12.0
-;; - concurrent.el ... Version 0.3.1
-;; - yaxception.el ... Version 0.3.2
-;; - all-the-icons.el ... Version 3.2.0
-
-
+;;
+;; For detail, see <https://github.com/aki2o/e2wm-perspb/blob/master/README.md>
+;;
 ;; Enjoy!!!
 
-
 ;;; Code:
+
 (require 'cl-lib)
 (require 'e2wm)
 (require 'persp-mode)
