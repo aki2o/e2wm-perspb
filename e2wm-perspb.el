@@ -6,7 +6,7 @@
 ;; Keywords: tools, window manager
 ;; URL: https://github.com/aki2o/e2wm-perspb
 ;; Version: 0.0.6
-;; Package-Requires: ((e2wm "1.2") (persp-mode "2.9.4") (dash "2.12.0") (deferred "0.3.1") (yaxception "0.3.2") (all-the-icons "3.2.0"))
+;; Package-Requires: ((e2wm "1.2") (persp-mode "2.9.4") (dash "2.12.0") (deferred "0.3.1") (yaxception "1.0.0") (all-the-icons "3.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -181,7 +181,7 @@
                            collect (e2wm-perspb::setup-entry entry b)))
          focused-buf)
     (with-current-buffer buf
-      (yaxception:$~
+      (yaxception:$
         (yaxception:try
           (setq focused-buf (get-text-property (point-at-bol) 'e2wm:buffer))
           (setq buffer-read-only nil)
@@ -312,7 +312,7 @@
      idle-update-delay
      nil
      '(lambda ()
-        (yaxception:$~
+        (yaxception:$
           (yaxception:try
             (when (e2wm:managed-p)
               (e2wm:plugin-exec-update-by-plugin-name
