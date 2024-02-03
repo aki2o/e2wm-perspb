@@ -141,7 +141,7 @@
     (with-current-buffer buf
       (yaxception:$
         (yaxception:try
-          (setq focused-buf (get-text-property (point-at-bol) 'e2wm:buffer))
+          (setq focused-buf (get-text-property (pos-bol) 'e2wm:buffer))
           (setq buffer-read-only nil)
           (erase-buffer)
           (cl-loop initially (goto-char (point-min))
@@ -157,7 +157,7 @@
                        (if (> pt (point-min)) "\n" "")
                        (e2wm:tp line 'e2wm:buffer (plist-get entry :buffer)))
                    if (eql focused-buf (plist-get entry :buffer))
-                   do (setq nextpt (point-at-bol))
+                   do (setq nextpt (pos-bol))
                    finally do (set-window-point (get-buffer-window) (goto-char (or nextpt (point-min)))))
           (e2wm-perspb::update-current-highlight)
           (setq mode-line-format
@@ -189,7 +189,7 @@
     `(:buffer ,buf
               :name ,(plist-get entry :name)
               :mark ,(or (plist-get entry :mark)
-                         (e2wm:aif (buffer-file-name b) (all-the-icons-icon-for-file it))
+                         (e2wm:aif (buffer-file-name buf) (all-the-icons-icon-for-file it))
                          (let* ((mode (buffer-local-value 'major-mode buf))
                                 (icon (all-the-icons-icon-for-mode mode)))
                            (if (eq icon mode)
@@ -204,7 +204,7 @@
   (when (not e2wm-perspb::current-highlight)
     (set (make-local-variable 'e2wm-perspb::current-highlight)
          (e2wm-perspb::make-current-highlight)))
-  (move-overlay e2wm-perspb::current-highlight (point-at-bol) (1+ (point-at-eol))))
+  (move-overlay e2wm-perspb::current-highlight (pos-bol) (1+ (pos-eol))))
 
 (defun e2wm-perspb::make-current-highlight ()
   (let ((ov (make-overlay (point) (point))))
@@ -232,7 +232,7 @@
 (defun e2wm-perspb:select-command ()
   (interactive)
   (when (e2wm:managed-p)
-    (let ((buf (get-text-property (point-at-bol) 'e2wm:buffer)))
+    (let ((buf (get-text-property (pos-bol) 'e2wm:buffer)))
       (switch-to-buffer buf)
       (e2wm:pst-window-select-main))))
 
@@ -269,14 +269,14 @@
     (run-with-idle-timer
      idle-update-delay
      nil
-     '(lambda ()
-        (yaxception:$
-          (yaxception:try
-            (when (e2wm:managed-p)
-              (e2wm:plugin-exec-update-by-plugin-name
-               (selected-frame) (e2wm:pst-get-wm) 'perspb)))
-          (yaxception:finally
-            (cc:semaphore-release e2wm-perspb::refresh-semaphore)))))))
+     #'(lambda ()
+         (yaxception:$
+           (yaxception:try
+             (when (e2wm:managed-p)
+               (e2wm:plugin-exec-update-by-plugin-name
+                (selected-frame) (e2wm:pst-get-wm) 'perspb)))
+           (yaxception:finally
+             (cc:semaphore-release e2wm-perspb::refresh-semaphore)))))))
 
 (defadvice persp-add-buffer (after e2wm-perspb:refresh activate)
   (e2wm-perspb:set-refresh-timer 'frame))
