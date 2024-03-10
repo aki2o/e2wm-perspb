@@ -96,6 +96,11 @@
           (factory-re (rx "/factories/"))
           (test-re (rx (or "/test/" "/__test__/" ".test."))))
       (cond
+       ((string-match test-re filepath)
+        `(:name ,bufname
+                :mark nil
+                :name-face e2wm-perspb-ts:test-name-face
+                :mark-face e2wm-perspb-ts:test-mark-face))
        ((string-match router-re filepath)
         `(:name ,bufname
                 :mark nil
@@ -115,12 +120,7 @@
         `(:name ,bufname
                 :mark nil
                 :name-face e2wm-perspb-ts:factory-name-face
-                :mark-face e2wm-perspb-ts:factory-mark-face))
-       ((string-match test-re filepath)
-        `(:name ,bufname
-                :mark nil
-                :name-face e2wm-perspb-ts:test-name-face
-                :mark-face e2wm-perspb-ts:test-mark-face))))))
+                :mark-face e2wm-perspb-ts:factory-mark-face))))))
 
 (add-to-list 'e2wm-perspb:entry-makers 'e2wm-perspb-ts:make-entry)
 
