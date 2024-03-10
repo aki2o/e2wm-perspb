@@ -90,8 +90,14 @@
   :group 'e2wm-perspb-rails)
 
 
+(defun e2wm-perspb-rails:mode-p (mode)
+  (cl-loop while mode
+           if (memq mode e2wm-perspb-rails:modes)
+           return t
+           else do (setq mode (get mode 'derived-mode-parent))))
+
 (defun e2wm-perspb-rails:make-entry (buf)
-  (when (memq (buffer-local-value 'major-mode buf) '(ruby-mode slim-mode haml-mode))
+  (when (e2wm-perspb-rails:mode-p (buffer-local-value 'major-mode buf))
     (let ((filepath (expand-file-name (buffer-file-name buf)))
           (bufname (buffer-name buf)))
       (cond
