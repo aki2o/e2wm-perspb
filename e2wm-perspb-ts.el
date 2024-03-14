@@ -59,14 +59,14 @@
   "Face for name of tsx."
   :group 'e2wm-perspb-ts)
 
-(defface e2wm-perspb-ts:factory-mark-face
+(defface e2wm-perspb-ts:testlib-mark-face
   '((t (:background "medium purple" :foreground "white" :bold t)))
-  "Face for mark of factory."
+  "Face for mark of testlib."
   :group 'e2wm-perspb-ts)
 
-(defface e2wm-perspb-ts:factory-name-face
+(defface e2wm-perspb-ts:testlib-name-face
   '((t (:foreground "medium purple")))
-  "Face for name of factory."
+  "Face for name of testlib."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:test-mark-face
@@ -93,14 +93,19 @@
           (router-re (rx "/pages/"))
           (declare-re (rx ".d.ts" eos))
           (tsx-re (rx (or ".jsx" ".tsx") eos))
-          (factory-re (rx "/factories/"))
-          (test-re (rx (or "/test/" "/__test__/" ".test."))))
+          (testlib-re (rx (or "/tests/" "/test/" "/factories/")))
+          (test-re (rx (or "/__tests__/" "/__test__/" ".test."))))
       (cond
        ((string-match test-re filepath)
         `(:name ,bufname
                 :mark nil
                 :name-face e2wm-perspb-ts:test-name-face
                 :mark-face e2wm-perspb-ts:test-mark-face))
+       ((string-match testlib-re filepath)
+        `(:name ,bufname
+                :mark nil
+                :name-face e2wm-perspb-ts:testlib-name-face
+                :mark-face e2wm-perspb-ts:testlib-mark-face))
        ((string-match router-re filepath)
         `(:name ,bufname
                 :mark nil
@@ -115,12 +120,7 @@
         `(:name ,bufname
                 :mark nil
                 :name-face e2wm-perspb-ts:tsx-name-face
-                :mark-face e2wm-perspb-ts:tsx-mark-face))
-       ((string-match factory-re filepath)
-        `(:name ,bufname
-                :mark nil
-                :name-face e2wm-perspb-ts:factory-name-face
-                :mark-face e2wm-perspb-ts:factory-mark-face))))))
+                :mark-face e2wm-perspb-ts:tsx-mark-face))))))
 
 (add-to-list 'e2wm-perspb:entry-makers 'e2wm-perspb-ts:make-entry)
 
