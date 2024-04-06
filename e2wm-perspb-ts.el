@@ -30,52 +30,52 @@
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:router-mark-face
-  '((t (:background "lime green" :foreground "white" :bold t)))
+  '((t (:inherit font-lock-builtin-face :bold t)))
   "Face for makr of router."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:router-name-face
-  '((t (:foreground "lime green")))
+  '((t (:inherit font-lock-builtin-face)))
   "Face for name of router."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:declare-mark-face
-  '((t (:background "dodger blue" :foreground "white" :bold t)))
+  '((t (:inherit font-lock-constant-face :bold t)))
   "Face for mark of declare."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:declare-name-face
-  '((t (:foreground "dodger blue")))
+  '((t (:inherit font-lock-constant-face)))
   "Face for name of declare."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:tsx-mark-face
-  '((t (:background "sandy brown" :foreground "white" :bold t)))
+  '((t (:inherit font-lock-keyword-face :bold t)))
   "Face for mark of tsx."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:tsx-name-face
-  '((t (:foreground "sandy brown")))
+  '((t (:inherit font-lock-keyword-face)))
   "Face for name of tsx."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:testlib-mark-face
-  '((t (:background "medium purple" :foreground "white" :bold t)))
+  '((t (:inherit font-lock-variable-name-face :bold t)))
   "Face for mark of testlib."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:testlib-name-face
-  '((t (:foreground "medium purple")))
+  '((t (:inherit font-lock-variable-name-face)))
   "Face for name of testlib."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:test-mark-face
-  '((t (:background "violet red" :foreground "white" :bold t)))
+  '((t (:inherit font-lock-function-name-face :bold t)))
   "Face for mark of test."
   :group 'e2wm-perspb-ts)
 
 (defface e2wm-perspb-ts:test-name-face
-  '((t (:foreground "violet red")))
+  '((t (:inherit font-lock-function-name-face)))
   "Face for name of test."
   :group 'e2wm-perspb-ts)
 
