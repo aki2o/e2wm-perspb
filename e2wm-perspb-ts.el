@@ -88,7 +88,7 @@
 
 (defun e2wm-perspb-ts:make-entry (buf)
   (when (e2wm-perspb-ts:mode-p (buffer-local-value 'major-mode buf))
-    (let ((filepath (expand-file-name (buffer-file-name buf)))
+    (let ((filepath (or (ignore-errors (expand-file-name (buffer-file-name buf))) ""))
           (bufname (buffer-name buf))
           (router-re (rx "/pages/"))
           (declare-re (rx ".d.ts" eos))
