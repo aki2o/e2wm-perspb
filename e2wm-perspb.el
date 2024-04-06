@@ -5,7 +5,7 @@
 ;; Author: Hiroaki Otsu <ootsuhiroaki@gmail.com>
 ;; Keywords: tools, window manager
 ;; URL: https://github.com/aki2o/e2wm-perspb
-;; Version: 0.0.9
+;; Version: 0.1.0
 ;; Package-Requires: ((e2wm "1.2") (persp-mode "2.9.4") (dash "2.12.0") (deferred "0.3.1") (yaxception "1.0.0") (all-the-icons "3.2.0"))
 
 ;; This program is free software; you can redistribute it and/or modify
